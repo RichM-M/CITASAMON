@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestras Citas - Snoopy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        snoopyRed: '#e01a22',
+                        woodstockYellow: '#fcd303',
+                        comicBlack: '#1a1a1a',
+                    },
+                    fontFamily: {
+                        comic: ['"Comic Neue"', 'cursive'],
+                    },
+                    boxShadow: {
+                        'comic': '6px 6px 0px 0px rgba(26,26,26,1)',
+                        'comic-hover': '2px 2px 0px 0px rgba(26,26,26,1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f0f4f8; /* Azul muy clarito como el cielo */
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .card-transition {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .completed-card {
+            filter: grayscale(0.6) opacity(0.8);
+            background-color: #f3f4f6 !important;
+            box-shadow: 2px 2px 0px 0px rgba(26,26,26,0.5) !important;
+            transform: translate(4px, 4px);
+        }
+
+        /* Ocultar barra de desplazamiento para un look más limpio */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; border-left: 2px solid black;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e01a22; border: 2px solid black; border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-comic text-comicBlack min-h-screen pb-12">
+
+    <header class="bg-snoopyRed border-b-4 border-comicBlack p-6 text-center relative overflow-hidden">
+        <div class="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
+            <!-- GIF de Snoopy abrazando el corazón -->
+            <img src="https://media.giphy.com/media/PZBSqDB4O5I7C/giphy.gif" alt="Snoopy Love" class="w-24 h-24 rounded-full border-4 border-comicBlack shadow-comic bg-white mb-4 object-cover">
+            
+            <h1 class="text-4xl md:text-6xl font-bold text-white tracking-wide" style="text-shadow: 3px 3px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">
+                Nuestras Citas Planeadas
+            </h1>
+            <p class="text-white mt-2 text-xl font-bold bg-comicBlack px-4 py-1 rounded-full inline-block border-2 border-white">
+                Contigo todas son mis favoritas ❤️
+            </p>
+        </div>
+        <!-- Detalles decorativos -->
+        <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-woodstockYellow rounded-full border-4 border-comicBlack"></div>
+        <div class="absolute top-4 -right-4 w-12 h-12 bg-white rounded-full border-4 border-comicBlack"></div>
+    </header>
+
+    <div class="max-w-5xl mx-auto px-4 mt-8">
+        <!-- Barra de Progreso -->
+        <div class="bg-white border-4 border-comicBlack p-4 rounded-xl shadow-comic mb-8 flex items-center gap-4">
+            <img src="https://media.tenor.com/F3-U9mP9J0sAAAAi/snoopy-walking.gif" alt="Snoopy Walking" class="w-12 h-12 object-contain">
+            <div class="flex-1">
+                <div class="flex justify-between mb-1">
+                    <span class="font-bold text-lg">Progreso de aventuras:</span>
+                    <span id="progress-text" class="font-bold text-snoopyRed text-lg">0/28</span>
+                </div>
+                <div class="w-full bg-gray-200 border-2 border-comicBlack rounded-full h-4">
+                    <div id="progress-bar" class="bg-woodstockYellow h-full rounded-full border-r-2 border-comicBlack transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dates-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Las tarjetas se inyectarán aquí vía JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Lista de citas con sus respectivos emojis
+        const datesList = [
+            { id: 1, title: "Ir al trote a comer", emoji: "🌮" },
+            { id: 2, title: "Ir al cine vmm", emoji: "🍿" },
+            { id: 3, title: "Ir al cine de la linterna mágica", emoji: "🎥" },
+            { id: 4, title: "Ir a la cineteca de Chapultepec", emoji: "🎞️" },
+            { id: 5, title: "Ir a la cineteca del CENART", emoji: "🎬" },
+            { id: 6, title: "Ir a comer al pozole de la alcaldía", emoji: "🍲" },
+            { id: 7, title: "Ir a las luchas", emoji: "🤼‍♂️" },
+            { id: 8, title: "Ir a un concierto de música clásica", emoji: "🎻" },
+            { id: 9, title: "Ir al teatro", emoji: "🎭" },
+            { id: 10, title: "Ir a una date de lectura si o q", emoji: "📖" },
+            { id: 11, title: "Ir a Parque Aztlan", emoji: "🎡" },
+            { id: 12, title: "Ir al baseball", emoji: "⚾" },
+            { id: 13, title: "Ir a ver matilda (obviamente la obra)", emoji: "👧📚" },
+            { id: 14, title: "Ir a ver La Odisea", emoji: "⛵" },
+            { id: 15, title: "Ir a ver Mario Galaxy", emoji: "🍄🌌" },
+            { id: 16, title: "Comer monkey papas, pastel de costco y ver the office", emoji: "🍟🍰🖥️" },
+            { id: 17, title: "Ir a pintar figuritas de cerámica", emoji: "🎨🏺" },
+            { id: 18, title: "Jugar juegos de mesa", emoji: "🎲" },
+            { id: 19, title: "Armar juntos el lego de snoopy", emoji: "🧱🐶" },
+            { id: 20, title: "Irnos a un pueblito un fin de semana", emoji: "🎒🏘️" },
+            { id: 21, title: "Ir a comprar ropa juntos", emoji: "🛍️" },
+            { id: 22, title: "Ir a ver siete veces adiós", emoji: "💔🎭" },
+            { id: 23, title: "Ir al acuario", emoji: "🐠" },
+            { id: 24, title: "Colorear/ pintar un cuadritop", emoji: "🖍️🖼️" },
+            { id: 25, title: "Cocinar juntooooooos (cuando vivas solo)", emoji: "🧑‍🍳🍳" },
+            { id: 26, title: "Ir al boliche", emoji: "🎳" },
+            { id: 27, title: "Hacer figuritas de foami moldeable", emoji: "🧸" },
+            { id: 28, title: "Ir a comer tacos del chupacabras por favor", emoji: "🌮🤤" }
+        ];
+
+        // Estado guardado en LocalStorage
+        let completedDates = JSON.parse(localStorage.getItem('snoopyDates_completed')) || [];
+
+        const container = document.getElementById('dates-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        function renderCards() {
+            container.innerHTML = ''; // Limpiar contenedor
+            
+            datesList.forEach(date => {
+                const isCompleted = completedDates.includes(date.id);
+                
+                // Crear el elemento tarjeta
+                const card = document.createElement('div');
+                card.className = `
+                    bg-white border-4 border-comicBlack p-5 rounded-2xl flex flex-col justify-between
+                    card-transition shadow-comic relative overflow-hidden group
+                    ${isCompleted ? 'completed-card' : 'hover:-translate-y-2 hover:shadow-comic-hover cursor-pointer'}
+                `;
+                
+                // Si la tarjeta está clickeada en un área que no es el botón, también hacer toggle
+                if(!isCompleted) {
+                   card.onclick = (e) => {
+                       if(e.target.tagName !== 'BUTTON') toggleDate(date.id);
+                   }
+                }
+
+                card.innerHTML = `
+                    ${isCompleted ? '<div class="absolute top-2 right-2 text-snoopyRed text-3xl transform rotate-12 drop-shadow-md">❤️</div>' : ''}
+                    
+                    <div>
+                        <div class="text-4xl mb-3 drop-shadow-sm">${date.emoji}</div>
+                        <h3 class="text-xl font-bold leading-tight mb-4 ${isCompleted ? 'line-through text-gray-500' : 'text-comicBlack'}">
+                            ${date.title}
+                        </h3>
+                    </div>
+                    
+                    <button 
+                        onclick="toggleDate(${date.id}); event.stopPropagation();" 
+                        class="mt-auto w-full py-2 font-bold text-lg rounded-xl border-2 border-comicBlack transition-colors
+                        ${isCompleted 
+                            ? 'bg-gray-300 text-gray-600 hover:bg-gray-400' 
+                            : 'bg-woodstockYellow hover:bg-yellow-400 text-comicBlack active:bg-yellow-500 shadow-[2px_2px_0_0_rgba(0,0,0,1)]'
+                        }"
+                    >
+                        ${isCompleted ? 'Deshacer' : '¡Cita cumplida!'}
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            
+            updateProgress();
+        }
+
+        function toggleDate(id) {
+            if (completedDates.includes(id)) {
+                // Quitar de completados
+                completedDates = completedDates.filter(dateId => dateId !== id);
+            } else {
+                // Agregar a completados
+                completedDates.push(id);
+                // Efecto de confeti casero visual
+                createTinyHearts();
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('snoopyDates_completed', JSON.stringify(completedDates));
+            
+            // Re-renderizar
+            renderCards();
+        }
+
+        function updateProgress() {
+            const total = datesList.length;
+            const completed = completedDates.length;
+            const percentage = (completed / total) * 100;
+            
+            progressText.innerText = `${completed}/${total}`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Un pequeño detalle: crear corazoncitos flotantes al marcar como hecho (opcional, le da un toque lindo)
+        function createTinyHearts() {
+            for(let i=0; i<5; i++){
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animation = `floatUp ${Math.random() * 2 + 2}s linear forwards`;
+                heart.style.zIndex = '9999';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 4000);
+            }
+        }
+
+        // Iniciar la app
+        renderCards();
+    </script>
+    
+    <style>
+        @keyframes floatUp {
+            to {
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>
